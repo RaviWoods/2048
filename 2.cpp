@@ -85,61 +85,44 @@ void PushandMerge(int num, int (&grid)[SIZE][SIZE]) {
 		int a = num;
 		int b = num;
 		int j = 0;
-		int temp = 0;
 		bool i = false;
+		bool advance = false;
 
-		//two = grid[b][rowind];	
-		//one = grid[a][rowind];
+		//two = grid[b][rowind]	
+		//one = grid[a][rowind]
 		
-		while (!i) {
+		while (j <= 3){
+			advance = true;
 			if(grid[b][rowind] == 0) {
-				{};
+				advance = true;
 			}
 			else if(grid[a][rowind] == 0) {
-				grid[a][rowind] = temp;
-				grid[a][rowind] = grid[b][rowind]; 
-				grid[b][rowind] = temp;
+				grid[a][rowind] = grid[b][rowind];
+				grid[b][rowind]	= 0;
+				advance = false;
 			}
-			else {
-				if(a==b) {
-					{};
-				}
-				else if(grid[a][rowind] == grid[b][rowind]) {
+			else if(a != b) {
+				if (grid[a][rowind] == grid[b][rowind]) {
 					grid[a][rowind] = 2*grid[a][rowind];
-					grid[b][rowind] = 0;
-					a = b;
-
-				}	
-				else if((b-a)>1) {
-					if (num == 0) {
-						grid[a+1][rowind] = grid[b][rowind];
-						grid[b][rowind] = 0;
-						a++;
-					}
-					else {
-						grid[a-1][rowind] = grid[b][rowind];
-						grid[b][rowind] = 0;
-						a--;
-					}
-					
+					grid[b][rowind]	= 0;
+					advance = true;
 				}
-				else {		
-					a = b;
+				else {
+					i = true;
+					advance = false;
 				}
 			}
-			if(j == 3) {
-				i = true;	
+			
+			if(i) {
+				a++;
 			}
-			else if (num == 0) {
-				b = b + 1;
+			else if(advance) {
 				j++;
-			}
-			else if (num == 3) {
-				b = b - 1;
-				j++;
+				if(j != 3) {
+					b++;
+				}
 			}
 		}
-		
 	}
 }
 
