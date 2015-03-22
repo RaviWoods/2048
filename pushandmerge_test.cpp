@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cstdlib>
 #define SIZE 4
+#define SIZE2 5
 
 using namespace std;
 
@@ -17,45 +18,47 @@ using namespace std;
 	cout << endl;
 */
 
-void PushandMerge(int num, int (&grid)[SIZE][SIZE]);
+void PushandMerge(int num, int (&grid)[SIZE2][SIZE]);
 
 int main() {
 	//Open inputconf.txt
 	ifstream infile;
-	infile.open("inputconf3.txt");
-	int grid[SIZE][SIZE]={0};
+	infile.open("inputconf4.txt");
+	int grid[SIZE2][SIZE]={0};
 	int temp;
 
 	//If file not found, read default start config into array
 	if(!infile.is_open()) {
-		grid[SIZE-1][SIZE-1] = 2;
+		grid[SIZE2-1][SIZE-1] = 2;
 	}
 
 	//Else, read file into array and close file.
 	else {
-		for(int rowind = 0; rowind < SIZE; rowind++) {
+		for(int rowind = 0; rowind < SIZE2; rowind++) {
 			for(int colind = 0; colind < SIZE; colind ++) {
 				infile >> temp;
-				grid[colind][rowind] = temp;
+				grid[rowind][colind] = temp;
 			}
 		}
 	}
 
 	infile.close();
 
-	for(int rowind = 0; rowind < SIZE; rowind++) {
+	/*
+	for(int rowind = 0; rowind < SIZE2; rowind++) {
 		for(int colind = 0; colind < SIZE; colind ++) {
-			cout << grid[colind][rowind] << "\t";
+			cout << grid[rowind][colind] << "\t";
 		}
 		cout << endl;
 	}
 	cout << endl;
+	*/
 
 	PushandMerge(3, grid);
 
-	for(int colind = 0; colind < SIZE; colind++) {
-		for(int rowind = 0; rowind < SIZE; rowind ++) {
-			cout << grid[rowind][colind] << "\t";
+	for(int rowind = 0; rowind < SIZE2; rowind++) {
+		for(int colind = 0; colind < SIZE; colind ++) {
+			cout << grid[rowind][colind] << " , " << "\t";
 		}
 		cout << endl;
 	}
@@ -80,32 +83,32 @@ int main() {
 
 }
 
-void PushandMerge(int num, int (&grid)[SIZE][SIZE]) {
-	for(int rowind = 0; rowind < SIZE; rowind++) {
+void PushandMerge(int num, int (&grid)[SIZE2][SIZE]) {
+	for(int rowind = 0; rowind < SIZE2; rowind++) {
 		int a = num;
 		int b = num;
 		int j = 0;
 		bool i = false;
 		bool advance = false;
 
-		//two = grid[b][rowind]
-		//one = grid[a][rowind]
+		//two = grid[rowind][b]
+		//one = grid[rowind][a]
 
 		while (j <= 3){
 			advance = true;
 			i = false;
-			if(grid[b][rowind] == 0 || a == b) {
+			if(grid[rowind][b] == 0 || a == b) {
 				advance = true;
 			}
-			else if(grid[a][rowind] == 0) {
-				grid[a][rowind] = grid[b][rowind];
-				grid[b][rowind]	= 0;
+			else if(grid[rowind][a] == 0) {
+				grid[rowind][a] = grid[rowind][b];
+				grid[rowind][b]	= 0;
 				advance = false;
 			}
 			else if(a != b) {
-				if (grid[a][rowind] == grid[b][rowind]) {
-					grid[a][rowind] = 2*grid[a][rowind];
-					grid[b][rowind]	= 0;
+				if (grid[rowind][a] == grid[rowind][b]) {
+					grid[rowind][a] = 2*grid[rowind][a];
+					grid[rowind][b]	= 0;
 					advance = true;
 				}
 				else {
