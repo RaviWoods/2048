@@ -15,14 +15,12 @@ struct element {
 
 void PushandMerge_RightLeft(int num, int (&grid)[SIZE][SIZE]);
 void PushandMerge_UpDown(int num, int (&grid)[SIZE][SIZE]);
-void FindEmptyElements (int (&grid)[SIZE][SIZE], vector<element>& emptyelements);
-void AddRandomTwo(int (&grid)[SIZE][SIZE], vector<element>& emptyelements);
-bool CheckGameOver(int (&grid)[SIZE][SIZE]) ;
-void PrintGrid(int (&grid)[SIZE][SIZE]);
+void FindEmptyElements (int (grid)[SIZE][SIZE], vector<element>& emptyelements);
+void AddRandomTwo(int (&grid)[SIZE][SIZE], const vector<element>& emptyelements);
+bool CheckGameOver(int (grid)[SIZE][SIZE]) ;
+void PrintGrid(int (grid)[SIZE][SIZE]);
 
 int main() {
-    srand((unsigned)time(0));
-
 	//Open inputconf.txt
 	ifstream infile;
 	infile.open("inputconf3.txt");
@@ -44,52 +42,54 @@ int main() {
 		}
 	}
 
-	infile.close();
-	string command;
-	PrintGrid(grid);
-
-
-	PrintGrid(grid);
-	vector<element> emptyelements;
-	FindEmptyElements(grid, emptyelements);
-
-    int randomindex = int((emptyelements.size())*rand()/(RAND_MAX));
-    bool gover = CheckGameOver(grid);
-    AddRandomTwo(grid,emptyelements);
     PrintGrid(grid);
-	if(gover) {
-		cout << "OVER" << endl;
-	}
-	return 0;
+	bool gameover = false;
+	srand((unsigned)time(0));
+	while (!gameover) {
 	//While game over condition false
-		//Read in user command
+
+		//Change array according to user command, and Print
+		string command;
         cin >> command;
 
         if(command == "w") {
             PushandMerge_UpDown(0, grid);
         }
-            else if(command == "s") {
+        else if(command == "s") {
             PushandMerge_UpDown(3, grid);
         }
-            else if(command == "a") {
+        else if(command == "a") {
             PushandMerge_RightLeft(0, grid);
         }
         else if(command == "d") {
             PushandMerge_RightLeft(3, grid);
         }
 
+		vector<element> emptyelements;
+		FindEmptyElements(grid, emptyelements);
+		if(emptyelements.size() == 0) {
+			gameover = CheckGameOver(grid);
+			//If no of empty elements = 0; just check for game over
+		}
+		else if(emptyelements.size() == 1) {
+			AddRandomTwo(grid,emptyelements);
+			gameover = CheckGameOver(grid);
+			//If no of empty elements = 1; add a two, then check for game over
+		}
+		else {
+			AddRandomTwo(grid,emptyelements);
+			//If no of empty elements > 1, just add a two
+		}
 
-		//Change array according to command
-		//If no of empty elements = 0
-			//Check for game over
-		//If no of empty elements = 1
-			//Add a 2 in one of the empty elements
-			//Check for game over
-		//If no of empty elements > 1
-			//Add a 2 in one of the empty elements
 		//Print grid
-		//If game over condition true, print message and return
+		PrintGrid(grid);
 
+		//If game over condition true, print message and return
+		if(gameover) {
+			cout << "game over" << endl;
+		}
+
+	}
 }
 
 void PushandMerge_RightLeft(int num, int (&grid)[SIZE][SIZE]) {
@@ -204,13 +204,13 @@ void PushandMerge_UpDown(int num, int (&grid)[SIZE][SIZE]) {
 	}
 }
 
-void AddRandomTwo(int (&grid)[SIZE][SIZE], vector<element>& emptyelements) {
+void AddRandomTwo(int (&grid)[SIZE][SIZE],const vector<element>& emptyelements) {
 	int randomindex = int((emptyelements.size())*rand()/(RAND_MAX));
 	grid[emptyelements[randomindex].rowind][emptyelements[randomindex].colind] = 2;
 	return;
 }
 
-bool CheckGameOver(int (&grid)[SIZE][SIZE]) {
+bool CheckGameOver(int (grid)[SIZE][SIZE]) {
 	bool gameover = true;
 	for(int rowind = 0; rowind < SIZE; rowind++) {
 		for(int colind = 0; colind < SIZE; colind ++) {
@@ -229,7 +229,7 @@ bool CheckGameOver(int (&grid)[SIZE][SIZE]) {
 	return gameover;
 }
 
-void FindEmptyElements (int (&grid)[SIZE][SIZE], vector<element>& emptyelements) {
+void FindEmptyElements (int (grid)[SIZE][SIZE], vector<element>& emptyelements) {
 	for(int rowind = 0; rowind < SIZE; rowind++) {
 		for(int colind = 0; colind < SIZE; colind ++) {
 			if(grid[rowind][colind] == 0) {
@@ -244,7 +244,7 @@ void FindEmptyElements (int (&grid)[SIZE][SIZE], vector<element>& emptyelements)
 }
 
 
-void PrintGrid(int (&grid)[SIZE][SIZE]) {
+void PrintGrid(int (grid)[SIZE][SIZE]) {
 	for(int rowind = 0; rowind < SIZE; rowind++) {
 		for(int colind = 0; colind < SIZE; colind ++) {
 			cout << grid[rowind][colind] << "\t";
